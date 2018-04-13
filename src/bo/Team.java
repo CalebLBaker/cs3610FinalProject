@@ -79,6 +79,38 @@ public class Team {
 	public Integer getId() {
 		return teamId;
 	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String n) {
+		name = n;
+	}
+	
+	public String getLeague() {
+		return league;
+	}
+	
+	public void setLeague(String l) {
+		league = l;
+	}
+	
+	public Integer getFounded() {
+		return yearFounded;
+	}
+	
+	public void setFounded(Integer f) {
+		yearFounded = f;
+	}
+	
+	public Integer getLast() {
+		return yearLast;
+	}
+	
+	public void setLast(Integer l) {
+		yearLast = l;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
