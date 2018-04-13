@@ -25,15 +25,15 @@ public class Team {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer teamId;
 	
-//	@ElementCollection
-//	@CollectionTable(name = "playerposition", joinColumns = @JoinColumn(name = "playerid"))
-//	@Column(name = "position")
-//	@Fetch(FetchMode.JOIN)
-//	Set<String> positions = new HashSet<String>();
 	
-//	@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="id.player")
-//	@Fetch(FetchMode.JOIN)
-//	Set<PlayerSeason> seasons = new HashSet<PlayerSeason>();
+	@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="id.")
+	@Fetch(FetchMode.JOIN)
+	Set<TeamSeasonPlayer> rosters = new HashSet<TeamSeasonPlayer>();
+
+	
+	@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="id.team")
+	@Fetch(FetchMode.JOIN)
+	Set<TeamSeason> seasons = new HashSet<TeamSeason>();
 	
 	@Column
 	String name;
