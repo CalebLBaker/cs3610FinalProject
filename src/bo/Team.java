@@ -75,6 +75,42 @@ public class Team {
 	public void setSeasons(Set<TeamSeason> seasons) {
 		this.seasons = seasons;
 	}
+	
+	public Integer getId() {
+		return teamId;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String n) {
+		name = n;
+	}
+	
+	public String getLeague() {
+		return league;
+	}
+	
+	public void setLeague(String l) {
+		league = l;
+	}
+	
+	public Integer getFounded() {
+		return yearFounded;
+	}
+	
+	public void setFounded(Integer f) {
+		yearFounded = f;
+	}
+	
+	public Integer getLast() {
+		return yearLast;
+	}
+	
+	public void setLast(Integer l) {
+		yearLast = l;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -82,18 +118,12 @@ public class Team {
 			return false;
 		}
 		Player other = (Player) obj;
-		return (this.getName().equalsIgnoreCase(other.getName()) &&
-				this.getBirthDay()==other.getBirthDay() &&
-				this.getDeathDay()==other.getDeathDay());
+		return (this.getId()==other.getId());
 	}
 	 
 	@Override
 	public int hashCode() {
-		Integer hash = 0;
-		if (this.getName()!=null) hash += this.getName().hashCode(); 
-		if (this.getBirthDay()!=null) hash += this.getBirthDay().hashCode();
-		if (this.getDeathDay()!=null) hash += this.getDeathDay().hashCode();
-		return hash;
+		return this.getId().hashCode();
 	}
 	
 	
