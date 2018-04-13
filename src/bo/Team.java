@@ -45,34 +45,34 @@ public class Team {
 	Integer yearLast;
 
 	// utility function
-	public PlayerSeason getPlayerSeason(Integer year) {
-		for (PlayerSeason ps : seasons) {
+	public TeamSeason getTeamSeason(Integer year) {
+		for (TeamSeason ps : seasons) {
 			if (ps.getYear().equals(year)) return ps;
 		}
 		return null;
 	}
 	
-	public void addPosition(String p) {
-		positions.add(p);
+	public void addRoster(TeamSeasonPlayer p) {
+		rosters.add(p);
 	}
 
-	public Set<String> getPositions() {
-		return positions;
+	public Set<TeamSeasonPlayer> getRosters() {
+		return rosters;
 	}
 
-	public void setPositions(Set<String> positions) {
-		this.positions = positions;
+	public void setRosters(Set<TeamSeasonPlayer> positions) {
+		this.rosters = positions;
 	}
 
-	public void addSeason(PlayerSeason s) {
+	public void addSeason(TeamSeason s) {
 		seasons.add(s);
 	}
 
-	public Set<PlayerSeason> getSeasons() {
+	public Set<TeamSeason> getSeasons() {
 		return seasons;
 	}
 	
-	public void setSeasons(Set<PlayerSeason> seasons) {
+	public void setSeasons(Set<TeamSeason> seasons) {
 		this.seasons = seasons;
 	}
 	
