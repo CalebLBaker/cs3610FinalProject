@@ -1,6 +1,7 @@
 package conversion;
 
 import java.sql.Connection;
+
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,27 +10,30 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.sql.SQLException;
+import java.sql.*;
 
 import bo.BattingStats;
 import bo.CatchingStats;
 import bo.FieldingStats;
 import bo.PitchingStats;
 import bo.Player;
+import bo.Team;
 import bo.PlayerSeason;
 import dataaccesslayer.HibernateUtil;
 
 public class Convert {
 
 	static Connection conn;
-	static final String MYSQL_CONN_URL = "jdbc:mysql://192.168.150.141/mlb?"
+	static final String MYSQL_CONN_URL = "jdbc:mysql://localhost/mlb?"
     + "verifyServerCertificate=false&useSSL=true&" // PPD
-    + "user=dude&password=password"; 
+    + "user=user&password=password"; 
 
 	public static void main(String[] args) {
 		try {
 			long startTime = System.currentTimeMillis();
 			conn = DriverManager.getConnection(MYSQL_CONN_URL);
 			convertPlayers();
+			convertTeams();
 			long endTime = System.currentTimeMillis();
 			long elapsed = (endTime - startTime) / (1000*60);
 			System.out.println("Elapsed time in mins: " + elapsed);
@@ -66,9 +70,9 @@ public class Convert {
             "birthCountry, " +
 						"debut, " + 
 						"finalGame " +
-						"from Master");
+//						"from Master");
 						// for debugging comment previous line, uncomment next line
-						//"from Master where playerID = 'bondsba01' or playerID = 'youklke01';");
+						"from Master where playerID = 'bondsba01' or playerID = 'youklke01';");
 			ResultSet rs = ps.executeQuery();
 			int count=0; // for progress feedback only
 			while (rs.next()) {
@@ -146,6 +150,88 @@ public class Convert {
 		}
 
 	}
+
+	// Move team data from mysql to sql server
+	public static void convertTeams() {
+		try {
+			CallableStatement stmt  = conn.prepareCall("{call getTeamsMin()}");
+			ResultSet rs = stmt.executeQuery();
+			int count=0; // for progress feedback only
+			while (rs.next()) {
+				count++;
+				// this just gives us some progress feedback
+				if (count % 50 == 0) System.out.println("num teams: " + count);
+        
+				String name= rs.getString("name");
+				String league = rs.getString("league");
+				String founded = rs.getString("yearFounded");
+				String last = rs.getString("yearLast");
+				// this check is for data scrubbing
+				// don't want to bring anybody over that doesn't have a pid, firstname and lastname
+				if (name == null	|| name.isEmpty() || 
+					league == null || league.isEmpty()) continue;
+				Team t = new Team();
+				p.setName(firstName + " " + lastName);
+				p.setGivenName(rs.getString("nameGiven"));
+        
+				java.util.Date birthDay = convertIntsToDate(rs.getInt("birthYear"), rs.getInt("birthMonth"), rs.getInt("birthDay"));
+        if (birthDay!=null) p.setBirthDay(birthDay);
+				java.util.Date deathDay = convertIntsToDate(rs.getInt("deathYear"), rs.getInt("deathMonth"), rs.getInt("deathDay"));
+				if (deathDay!=null) p.setDeathDay(deathDay);
+        
+				// need to do some data scrubbing for bats and throws columns
+				String hand = rs.getString("bats");
+				if (hand!=null){
+          if (hand.equalsIgnoreCase("B")){
+            hand = "S";
+          }
+          else if (hand.equalsIgnoreCase(""))
+            hand = null;
+				} 
+				p.setBattingHand(hand);
+        
+        // Clean up throwing hand
+				hand = rs.getString("throws");
+        if (hand.equalsIgnoreCase("")){
+            hand = null;
+				} 
+				p.setThrowingHand(hand);
+        
+				p.setBirthCity(rs.getString("birthCity"));
+				p.setBirthState(rs.getString("birthState"));
+        p.setBirthCountry(rs.getString("birthCountry"));
+        
+        // Clean up debut and final game data.
+        try {
+          java.util.Date firstGame = rs.getDate("debut");
+          if (firstGame!=null) p.setFirstGame(firstGame);
+        }
+        catch (SQLException e){
+          // Ignore conversion error - remains null;
+          System.out.println(pid + ": debut invalid format");
+        }
+        try {
+          java.util.Date lastGame = rs.getDate("finalGame");
+          if (lastGame!=null) p.setLastGame(lastGame);
+        }
+        catch (SQLException e){
+          // Ignore conversion error - remains null
+          System.out.println(pid + ": finalGame invalid format");
+        }
+        
+				addPositions(p, pid);
+				// players bio collected, now go after stats
+				addSeasons(p, pid);
+				// we can now persist player, and the seasons and stats will cascade
+				HibernateUtil.persistPlayer(p);
+			}
+			rs.close();
+			ps.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	private static java.util.Date convertIntsToDate(int year, int month, int day) {
 		Calendar c = new GregorianCalendar();
