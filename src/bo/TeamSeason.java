@@ -1,14 +1,20 @@
 package bo;
 
 import java.io.Serializable;
+
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -46,6 +52,15 @@ public class TeamSeason implements Serializable {
 			return hash;
 		}
 	}
+	
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(name = "teamseasonplayer",
+	joinColumns={
+			@JoinColumn(name="teamId",insertable=false,updatable=false),
+			@JoinColumn(name="year",insertable=false,updatable=false)},
+	inverseJoinColumns={
+			@JoinColumn(name="playerId",insertable=false,updatable=false)})
+	Set<Player> players = new HashSet<Player>();
 
 	@Column
 	int gamesPlayed;
