@@ -175,8 +175,9 @@ public class Convert {
 				t.setName(name);
 				t.setLeague(league);
 				t.setFounded(founded);
-				t.setLast(last);        
-        
+				t.setLast(last);
+				
+// TODO: DO TeamSeason AND TeamSeasonPlayer STUFF /////////////////////////////////
 //				addPositions(p, pid);
 //				// players bio collected, now go after stats
 //				addSeasons(p, pid);
