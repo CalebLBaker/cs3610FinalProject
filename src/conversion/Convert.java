@@ -9,6 +9,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.HashMap;	// This is so we can do something awful with hash maps that takes up many MegaBytes of RAM. YAY!
+							// At least this isn't for the Taylor Programming Contest, so we do have RAM.
+
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import java.sql.SQLException;
 import java.sql.*;
 
@@ -28,11 +35,14 @@ public class Convert {
 	static final String MYSQL_CONN_URL = "jdbc:mysql://localhost/mlb?"
     + "verifyServerCertificate=false&useSSL=true&" // PPD
     + "user=user&password=password"; 
-
+	
+	static HashMap<String, Player> map;
+	
 	public static void main(String[] args) {
 		try {
 			long startTime = System.currentTimeMillis();
 			conn = DriverManager.getConnection(MYSQL_CONN_URL);
+			map = new HashMap();
 			convertPlayers();
 			convertTeams();
 			long endTime = System.currentTimeMillis();
@@ -142,6 +152,7 @@ public class Convert {
 				// players bio collected, now go after stats
 				addSeasons(p, pid);
 				// we can now persist player, and the seasons and stats will cascade
+				map.put(pid, p);
 				HibernateUtil.persistPlayer(p);
 			}
 			rs.close();
@@ -293,6 +304,8 @@ public class Convert {
 				s.setAttendance(rs.getInt("attendance"));
 				s.setRank(rs.getInt("Rank"));
 				
+				addPlayers(s, tid);
+				
 			}
 			rs.close();
 			stmt.close();
@@ -300,6 +313,20 @@ public class Convert {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public static void addPlayers(TeamSeason s, String tid) throws Exception {
+		
+		CallableStatement stmt  = conn.prepareCall("{call (getRoster(?, ?))}");
+		stmt.setInt(1, s.getYear());
+		stmt.setString(2, tid);
+		ResultSet rs = stmt.executeQuery();
+		while (rs.next()) {
+			String pid = rs.getString("playerID");
+			if (map.containsKey(pid)){
+				s.addPlayer(map.get(pid));
+			}
+		}
 	}
 	
 	public static double getSalary(String pid, Integer yid) {

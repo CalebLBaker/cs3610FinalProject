@@ -1,6 +1,7 @@
 package bo;
 
 import java.util.Date;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,16 +20,16 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-@Entity(name = "player")
+@Entity(name = "team")
 public class Team {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer teamId;
 	
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="id.")
-	@Fetch(FetchMode.JOIN)
-	Set<TeamSeasonPlayer> rosters = new HashSet<TeamSeasonPlayer>();
+//	@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="id.")
+//	@Fetch(FetchMode.JOIN)
+//	Set<TeamSeasonPlayer> rosters = new HashSet<TeamSeasonPlayer>();
 
 	
 	@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="id.team")
@@ -52,17 +53,17 @@ public class Team {
 		return null;
 	}
 	
-	public void addRoster(TeamSeasonPlayer p) {
-		rosters.add(p);
-	}
-
-	public Set<TeamSeasonPlayer> getRosters() {
-		return rosters;
-	}
-
-	public void setRosters(Set<TeamSeasonPlayer> positions) {
-		this.rosters = positions;
-	}
+//	public void addRoster(TeamSeasonPlayer p) {
+//		rosters.add(p);
+//	}
+//
+//	public Set<TeamSeasonPlayer> getRosters() {
+//		return rosters;
+//	}
+//
+//	public void setRosters(Set<TeamSeasonPlayer> positions) {
+//		this.rosters = positions;
+//	}
 
 	public void addSeason(TeamSeason s) {
 		seasons.add(s);

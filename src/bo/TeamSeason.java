@@ -76,6 +76,18 @@ public class TeamSeason implements Serializable {
 	// Hibernate needs a default constructor
 	public TeamSeason() {}
 	
+	public void addPlayer(Player p) {
+		players.add(p);
+	}
+
+	public Set<Player> getPlayers() {
+		return players;
+	}
+
+	public void setPlayers(Set<Player> p) {
+		this.players = p;
+	}
+	
 	public TeamSeason(Team t, Integer year) {
 		TeamSeasonId tsi = new TeamSeasonId();
 		tsi.team = t;
