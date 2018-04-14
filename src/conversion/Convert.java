@@ -164,69 +164,28 @@ public class Convert {
         
 				String name= rs.getString("name");
 				String league = rs.getString("league");
-				String founded = rs.getString("yearFounded");
-				String last = rs.getString("yearLast");
+				Integer founded = rs.getInt("yearFounded");
+				Integer last = rs.getInt("yearLast");
 				// this check is for data scrubbing
-				// don't want to bring anybody over that doesn't have a pid, firstname and lastname
+				// don't want to bring any team over that doesn't have a name and league 
 				if (name == null	|| name.isEmpty() || 
 					league == null || league.isEmpty()) continue;
+				
 				Team t = new Team();
-				p.setName(firstName + " " + lastName);
-				p.setGivenName(rs.getString("nameGiven"));
+				t.setName(name);
+				t.setLeague(league);
+				t.setFounded(founded);
+				t.setLast(last);        
         
-				java.util.Date birthDay = convertIntsToDate(rs.getInt("birthYear"), rs.getInt("birthMonth"), rs.getInt("birthDay"));
-        if (birthDay!=null) p.setBirthDay(birthDay);
-				java.util.Date deathDay = convertIntsToDate(rs.getInt("deathYear"), rs.getInt("deathMonth"), rs.getInt("deathDay"));
-				if (deathDay!=null) p.setDeathDay(deathDay);
-        
-				// need to do some data scrubbing for bats and throws columns
-				String hand = rs.getString("bats");
-				if (hand!=null){
-          if (hand.equalsIgnoreCase("B")){
-            hand = "S";
-          }
-          else if (hand.equalsIgnoreCase(""))
-            hand = null;
-				} 
-				p.setBattingHand(hand);
-        
-        // Clean up throwing hand
-				hand = rs.getString("throws");
-        if (hand.equalsIgnoreCase("")){
-            hand = null;
-				} 
-				p.setThrowingHand(hand);
-        
-				p.setBirthCity(rs.getString("birthCity"));
-				p.setBirthState(rs.getString("birthState"));
-        p.setBirthCountry(rs.getString("birthCountry"));
-        
-        // Clean up debut and final game data.
-        try {
-          java.util.Date firstGame = rs.getDate("debut");
-          if (firstGame!=null) p.setFirstGame(firstGame);
-        }
-        catch (SQLException e){
-          // Ignore conversion error - remains null;
-          System.out.println(pid + ": debut invalid format");
-        }
-        try {
-          java.util.Date lastGame = rs.getDate("finalGame");
-          if (lastGame!=null) p.setLastGame(lastGame);
-        }
-        catch (SQLException e){
-          // Ignore conversion error - remains null
-          System.out.println(pid + ": finalGame invalid format");
-        }
-        
-				addPositions(p, pid);
-				// players bio collected, now go after stats
-				addSeasons(p, pid);
-				// we can now persist player, and the seasons and stats will cascade
-				HibernateUtil.persistPlayer(p);
+//				addPositions(p, pid);
+//				// players bio collected, now go after stats
+//				addSeasons(p, pid);
+				
+				// we can now persist team, and the seasons and stats will cascade
+				HibernateUtil.persistTeam(t);
 			}
+			stmt.close();
 			rs.close();
-			ps.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
