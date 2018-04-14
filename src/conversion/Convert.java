@@ -81,9 +81,9 @@ public class Convert {
             "birthCountry, " +
 						"debut, " + 
 						"finalGame " +
-//						"from Master");
+						"from Master");
 						// for debugging comment previous line, uncomment next line
-						"from Master where playerID = 'bondsba01' or playerID = 'youklke01';");
+//						"from Master where playerID = 'bondsba01' or playerID = 'youklke01';");
 			ResultSet rs = ps.executeQuery();
 			int count=0; // for progress feedback only
 			while (rs.next()) {
@@ -166,7 +166,7 @@ public class Convert {
 	// Move team data from mysql to sql server
 	public static void convertTeams() {
 		try {
-			CallableStatement stmt  = conn.prepareCall("{call getTeamsMin()}");
+			CallableStatement stmt  = conn.prepareCall("{call getTeams()}");
 			ResultSet rs = stmt.executeQuery();
 			int count=0; // for progress feedback only
 			while (rs.next()) {
