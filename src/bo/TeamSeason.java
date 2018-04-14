@@ -126,6 +126,14 @@ public class TeamSeason implements Serializable {
 	public void setRank(int rank) {
 		this.rank = rank;
 	}
+	
+	public int getAttendance() {
+		return totalAttendance;
+	}
+	
+	public void setAttendance(int attend) {
+		this.totalAttendance = attend;
+	}
 
 	@Override
 	public boolean equals(Object obj) {

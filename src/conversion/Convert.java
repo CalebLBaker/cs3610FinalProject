@@ -18,6 +18,8 @@ import bo.FieldingStats;
 import bo.PitchingStats;
 import bo.Player;
 import bo.Team;
+import bo.TeamSeason;
+import bo.TeamSeasonPlayer;
 import bo.PlayerSeason;
 import dataaccesslayer.HibernateUtil;
 
@@ -162,13 +164,15 @@ public class Convert {
 				// this just gives us some progress feedback
 				if (count % 50 == 0) System.out.println("num teams: " + count);
         
+				String tid = rs.getString("teamID");
 				String name= rs.getString("name");
 				String league = rs.getString("league");
 				Integer founded = rs.getInt("yearFounded");
 				Integer last = rs.getInt("yearLast");
 				// this check is for data scrubbing
-				// don't want to bring any team over that doesn't have a name and league 
-				if (name == null	|| name.isEmpty() || 
+				// don't want to bring any team over that doesn't have a tid, name, and league 
+				if (tid == null || tid.isEmpty() ||
+					name == null	|| name.isEmpty() || 
 					league == null || league.isEmpty()) continue;
 				
 				Team t = new Team();
@@ -180,7 +184,7 @@ public class Convert {
 // TODO: DO TeamSeason AND TeamSeasonPlayer STUFF /////////////////////////////////
 //				addPositions(p, pid);
 //				// players bio collected, now go after stats
-//				addSeasons(p, pid);
+				addSeasons(t, tid);
 				
 				// we can now persist team, and the seasons and stats will cascade
 				HibernateUtil.persistTeam(t);
@@ -270,6 +274,35 @@ public class Convert {
 
 	}
 
+	public static void addSeasons(Team t, String tid) {
+		try {
+			
+			CallableStatement stmt  = conn.prepareCall("{call (getTeamSeason(?))}");
+			stmt.setString(1, tid);
+			ResultSet rs = stmt.executeQuery();
+			
+			TeamSeason s = null;
+			while (rs.next()) {
+				int yid = rs.getInt("yearID");
+
+				s = new TeamSeason(t,yid);
+				t.addSeason(s);
+				s.setGamesPlayed(rs.getInt("G"));
+				s.setLosses(rs.getInt("L"));
+				s.setWins(rs.getInt("W"));
+				s.setRank(rs.getInt("Rank"));
+				s.setAttendance(rs.getInt("attendance"));
+				s.setRank(rs.getInt("Rank"));
+				
+			}
+			rs.close();
+			stmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
 	public static double getSalary(String pid, Integer yid) {
 		double salary = 0;
 		try {
