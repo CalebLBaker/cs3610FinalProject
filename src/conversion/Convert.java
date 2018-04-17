@@ -239,8 +239,7 @@ public class Convert {
 		p.setPositions(positions);
 	}
 
-	public static void addSeasons(Player p, String pid) {
-		try {
+	public static void addSeasons(Player p, String pid) throws Exception {
 			PreparedStatement ps = conn.prepareStatement("select " + 
 					"yearID, " + 
 					"teamID, " +
@@ -278,16 +277,13 @@ public class Convert {
 			}
 			rs.close();
 			ps.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 	}
 
 	public static void addSeasons(Team t, String tid) {
 		try {
 			
-			CallableStatement stmt  = conn.prepareCall("{call (getTeamSeason(?))}");
+			CallableStatement stmt  = conn.prepareCall("{call getTeamSeason(?)}");
 			stmt.setString(1, tid);
 			ResultSet rs = stmt.executeQuery();
 			
@@ -317,7 +313,7 @@ public class Convert {
 	
 	public static void addPlayers(TeamSeason s, String tid) throws Exception {
 		
-		CallableStatement stmt  = conn.prepareCall("{call (getRoster(?, ?))}");
+		CallableStatement stmt  = conn.prepareCall("{call getRoster(?, ?)}");
 		stmt.setInt(1, s.getYear());
 		stmt.setString(2, tid);
 		ResultSet rs = stmt.executeQuery();

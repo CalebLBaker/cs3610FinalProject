@@ -173,7 +173,12 @@ public class TeamSeason implements Serializable {
 	 
 	@Override
 	public int hashCode() {
-		return this.getId().hashCode();
+		if (this.getId() != null) {
+			return this.getId().hashCode();
+		}
+		else {
+			return 0;
+		}
 	}
 
 	public static Comparator<TeamSeason> teamSeasonsComparator = new Comparator<TeamSeason>() {

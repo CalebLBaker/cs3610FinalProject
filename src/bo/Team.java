@@ -124,7 +124,13 @@ public class Team {
 	 
 	@Override
 	public int hashCode() {
-		return this.getId().hashCode();
+		Integer hash = 0;
+		if (this.getName()!=null) hash += this.getName().hashCode(); 
+		if (this.getLeague()!=null) hash += this.getLeague().hashCode();
+		if (this.getFounded()!=null) hash += this.getFounded().hashCode();
+		if (this.getLast() != null) hash += this.getLast().hashCode();
+		if (this.getId() != null) hash += this.getId();
+		return hash;
 	}
 	
 	
