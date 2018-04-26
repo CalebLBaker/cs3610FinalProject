@@ -78,7 +78,7 @@ public class TeamController extends BaseController {
         table[0][8] = "Career Batting Average";
         table[0][9] = "Career Steals";
         for (int i = 0; i < bos.size(); i++) {
-            Player p = bos.get(i);
+            Team p = bos.get(i);
             PlayerCareerStats stats = new PlayerCareerStats(p);
             String pid = p.getId().toString();
             table[i + 1][0] = view.encodeLink(new String[]{"id"}, new String[]{pid}, pid, ACT_DETAIL, SSP_PLAYER);
@@ -95,8 +95,9 @@ public class TeamController extends BaseController {
         view.buildTable(table);
     }
     
-    private void buildSearchResultsTablePlayerDetail(Player p) {
-    	Set<PlayerSeason> seasons = p.getSeasons();
+    // This method needs some work.
+    private void buildSearchResultsTableTeamDetail(Team p) {
+    	Set<TeamSeason> seasons = p.getSeasons();
     	Set<String> positions = p.getPositions();
     	List<PlayerSeason> list = new ArrayList<PlayerSeason>(seasons);
     	Collections.sort(list, PlayerSeason.playerSeasonsComparator);
