@@ -75,7 +75,7 @@ public class TeamController extends BaseController {
         for (int i = 0; i < bos.size(); i++) {
             Team t = bos.get(i);
             String tid = t.getId().toString();
-            table[i + 1][0] = view.encodeLink(new String[]{"id"}, new String[]{tid}, tid, ACT_DETAIL, SSP_PLAYER);
+            table[i + 1][0] = view.encodeLink(new String[]{"id"}, new String[]{tid}, tid, ACT_DETAIL, SSP_TEAM);
             table[i + 1][1] = t.getName();
             table[i + 1][2] = t.getLeague();
             table[i + 1][3] = t.getYearFounded().toString();
@@ -114,9 +114,10 @@ public class TeamController extends BaseController {
         int i = 0;
         for (TeamSeason ts: list) {
         	i++;
+        	String tid = t.getId().toString();
         	seasonTable[i][0] = ts.getYear().toString();
         	seasonTable[i][1] = ts.getGamesPlayed().toString();
-        	seasonTable[i][2] = ;
+        	seasonTable[i][2] = view.encodeLink(new String[]{"id"}, new String[]{tid}, tid, ACT_ROSTER, SSP_TEAM);
         	seasonTable[i][3] = ts.getWins().toString();
         	seasonTable[i][4] = ts.getLosses().toString();
         	seasonTable[i][5] = ts.getRank().toString();
