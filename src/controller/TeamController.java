@@ -73,21 +73,6 @@ public class TeamController extends BaseController {
         table[0][3] = "Year Founded";
         table[0][4] = "Most Recent Year";
         for (int i = 0; i < bos.size(); i++) {
-<<<<<<< HEAD
-            Team p = bos.get(i);
-            PlayerCareerStats stats = new PlayerCareerStats(p);
-            String pid = p.getId().toString();
-            table[i + 1][0] = view.encodeLink(new String[]{"id"}, new String[]{pid}, pid, ACT_DETAIL, SSP_PLAYER);
-            table[i + 1][1] = p.getName();
-            table[i + 1][2] = DOLLAR_FORMAT.format(stats.getSalary());
-            table[i + 1][3] = stats.getGamesPlayed().toString();
-            table[i + 1][4] = formatDate(p.getFirstGame());
-            table[i + 1][5] = formatDate(p.getLastGame());
-            table[i + 1][6] = stats.getHomeRuns().toString();
-            table[i + 1][7] = stats.getHits().toString();
-            table[i + 1][8] = DOUBLE_FORMAT.format(stats.getBattingAverage());
-            table[i + 1][9] = stats.getSteals().toString();
-=======
             Team t = bos.get(i);
             String tid = t.getId().toString();
             table[i + 1][0] = view.encodeLink(new String[]{"id"}, new String[]{tid}, tid, ACT_DETAIL, SSP_TEAM);
@@ -95,24 +80,15 @@ public class TeamController extends BaseController {
             table[i + 1][2] = t.getLeague();
             table[i + 1][3] = t.getYearFounded().toString();
             table[i + 1][4] = t.getYearLast().toString();
->>>>>>> c3eb2f21100a9894f4f7c204aace38337396ebd8
         }
         view.buildTable(table);
     }
     
-<<<<<<< HEAD
-    // This method needs some work.
-    private void buildSearchResultsTableTeamDetail(Team p) {
-    	Set<TeamSeason> seasons = p.getSeasons();
-    	Set<String> positions = p.getPositions();
-    	List<PlayerSeason> list = new ArrayList<PlayerSeason>(seasons);
-    	Collections.sort(list, PlayerSeason.playerSeasonsComparator);
-=======
+
     private void buildSearchResultsTableTeamDetail(Team t) {
     	Set<TeamSeason> seasons = t.getSeasons();
     	List<TeamSeason> list = new ArrayList<TeamSeason>(seasons);
     	Collections.sort(list, TeamSeason.teamSeasonsComparator);
->>>>>>> c3eb2f21100a9894f4f7c204aace38337396ebd8
     	// build 2 tables.  first the player details, then the season details
         // need a row for the table headers
         String[][] teamTable = new String[2][4];
