@@ -9,21 +9,23 @@ import view.PlayerView;
 import bo.Player;
 import bo.PlayerCareerStats;
 import bo.PlayerSeason;
+import bo.Team;
+import bo.TeamSeason;
 import dataaccesslayer.HibernateUtil;
 
-public class PlayerController extends BaseController {
+public class TeamController extends BaseController {
 
     @Override
     public void init(String query) {
-        System.out.println("building dynamic html for player");
-        view = new PlayerView();
+        System.out.println("building dynamic html for team");
+        view = new TeamView();
         process(query);
     }
     
     @Override
     protected void performAction() {
         String action = keyVals.get("action");
-        System.out.println("playercontroller performing action: " + action);
+        System.out.println("teamcontroller performing action: " + action);
         if (action.equalsIgnoreCase(ACT_SEARCHFORM)) {
             processSearchForm();
         } else if (action.equalsIgnoreCase(ACT_SEARCH)) {
@@ -44,9 +46,9 @@ public class PlayerController extends BaseController {
         }
         String v = keyVals.get("exact");
         boolean exact = (v != null && v.equalsIgnoreCase("on"));
-        List<Player> bos = HibernateUtil.retrievePlayersByName(name, exact);
+        List<Team> bos = HibernateUtil.retrieveTeamsByName(name, exact);
         view.printSearchResultsMessage(name, exact);
-        buildSearchResultsTablePlayer(bos);
+        buildSearchResultsTableTeam(bos);
         view.buildLinkToSearch();
     }
 
