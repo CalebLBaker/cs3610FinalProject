@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import view.PlayerView;
+import view.TeamView;
 import bo.Player;
 import bo.PlayerCareerStats;
 import bo.PlayerSeason;
@@ -57,9 +57,9 @@ public class TeamController extends BaseController {
         if (id == null) {
             return;
         }
-        Team p = (Team) HibernateUtil.retrieveTeamById(Integer.valueOf(id));
-        if (p == null) return;
-        buildSearchResultsTableTeamDetail(p);
+        Team t = (Team) HibernateUtil.retrieveTeamById(Integer.valueOf(id));
+        if (t == null) return;
+        buildSearchResultsTableTeamDetail(t);
         view.buildLinkToSearch();
     }
 
@@ -69,15 +69,11 @@ public class TeamController extends BaseController {
         String[][] table = new String[bos.size() + 1][10];
         table[0][0] = "Id";
         table[0][1] = "Name";
-        table[0][2] = "Lifetime Salary";
-        table[0][3] = "Games Played";
-        table[0][4] = "First Game";
-        table[0][5] = "Last Game";
-        table[0][6] = "Career Home Runs";
-        table[0][7] = "Career Hits";
-        table[0][8] = "Career Batting Average";
-        table[0][9] = "Career Steals";
+        table[0][2] = "League";
+        table[0][3] = "Year Founded";
+        table[0][4] = "Most Recent Year";
         for (int i = 0; i < bos.size(); i++) {
+<<<<<<< HEAD
             Team p = bos.get(i);
             PlayerCareerStats stats = new PlayerCareerStats(p);
             String pid = p.getId().toString();
@@ -91,62 +87,66 @@ public class TeamController extends BaseController {
             table[i + 1][7] = stats.getHits().toString();
             table[i + 1][8] = DOUBLE_FORMAT.format(stats.getBattingAverage());
             table[i + 1][9] = stats.getSteals().toString();
+=======
+            Team t = bos.get(i);
+            String tid = t.getId().toString();
+            table[i + 1][0] = view.encodeLink(new String[]{"id"}, new String[]{tid}, tid, ACT_DETAIL, SSP_TEAM);
+            table[i + 1][1] = t.getName();
+            table[i + 1][2] = t.getLeague();
+            table[i + 1][3] = t.getYearFounded().toString();
+            table[i + 1][4] = t.getYearLast().toString();
+>>>>>>> c3eb2f21100a9894f4f7c204aace38337396ebd8
         }
         view.buildTable(table);
     }
     
+<<<<<<< HEAD
     // This method needs some work.
     private void buildSearchResultsTableTeamDetail(Team p) {
     	Set<TeamSeason> seasons = p.getSeasons();
     	Set<String> positions = p.getPositions();
     	List<PlayerSeason> list = new ArrayList<PlayerSeason>(seasons);
     	Collections.sort(list, PlayerSeason.playerSeasonsComparator);
+=======
+    private void buildSearchResultsTableTeamDetail(Team t) {
+    	Set<TeamSeason> seasons = t.getSeasons();
+    	List<TeamSeason> list = new ArrayList<TeamSeason>(seasons);
+    	Collections.sort(list, TeamSeason.teamSeasonsComparator);
+>>>>>>> c3eb2f21100a9894f4f7c204aace38337396ebd8
     	// build 2 tables.  first the player details, then the season details
         // need a row for the table headers
-        String[][] playerTable = new String[2][6];
-        playerTable[0][0] = "Name";
-        playerTable[0][1] = "Given Name";
-        playerTable[0][2] = "Positions";
-        playerTable[0][3] = "Birthday";
-        playerTable[0][4] = "Deathday";
-        playerTable[0][5] = "Hometown";
-        playerTable[1][0] = p.getName();
-        playerTable[1][1] = p.getGivenName();
-        String pos="";
-        boolean first = true;
-        for (String s: positions) {
-        	if (first) {
-        		pos += s;
-        		first = false;
-        	} else {
-        		pos += ", " + s;	
-        	}
-        }
-        playerTable[1][2] = pos;
-        playerTable[1][3] = formatDate(p.getBirthDay());
-        playerTable[1][4] = formatDate(p.getDeathDay());
-        playerTable[1][5] = p.getBirthCity() + ", " + p.getBirthState();
+        String[][] teamTable = new String[2][4];
+        teamTable[0][0] = "Name";
+        teamTable[0][1] = "League";
+        teamTable[0][2] = "Year Founded";
+        teamTable[0][3] = "Most Recent Year";
+        teamTable[1][0] = t.getName();
+        teamTable[1][1] = t.getLeague();
+        teamTable[1][2] = t.getYearFounded().toString();
+        teamTable[1][3] = t.getYearLast().toString();
         
-        view.buildTable(playerTable);
+        view.buildTable(teamTable);
+        
         // now for seasons
         String[][] seasonTable = new String[seasons.size()+1][7];
         seasonTable[0][0] = "Year";
         seasonTable[0][1] = "Games Played";
-        seasonTable[0][2] = "Salary";
-        seasonTable[0][3] = "Hits";
-        seasonTable[0][4] = "At Bats";
-        seasonTable[0][5] = "Batting Average";
-        seasonTable[0][6] = "Home Runs";
+        seasonTable[0][2] = "Roster";
+        seasonTable[0][3] = "Wins";
+        seasonTable[0][4] = "Losses";
+        seasonTable[0][5] = "Rank";
+        seasonTable[0][6] = "Attendance";
         int i = 0;
-        for (PlayerSeason ps: list) {
+        for (TeamSeason ts: list) {
         	i++;
-        	seasonTable[i][0] = ps.getYear().toString();
-        	seasonTable[i][1] = ps.getGamesPlayed().toString();
-        	seasonTable[i][2] = DOLLAR_FORMAT.format(ps.getSalary());
-        	seasonTable[i][3] = ps.getBattingStats().getHits().toString();
-        	seasonTable[i][4] = ps.getBattingStats().getAtBats().toString();
-        	seasonTable[i][5] = DOUBLE_FORMAT.format(ps.getBattingAverage());
-        	seasonTable[i][6] = ps.getBattingStats().getHomeRuns().toString();
+        	String tid = t.getId().toString();
+        	seasonTable[i][0] = ts.getYear().toString();
+        	seasonTable[i][1] = ts.getGamesPlayed().toString();
+        	seasonTable[i][2] = view.encodeLink(new String[]{"id"}, new String[]{tid}, tid, ACT_ROSTER, SSP_TEAM);
+        	seasonTable[i][3] = ts.getWins().toString();
+        	seasonTable[i][4] = ts.getLosses().toString();
+        	seasonTable[i][5] = ts.getRank().toString();
+        	seasonTable[i][6] = ts.getTotalAttendance().toString();
         }
         view.buildTable(seasonTable);
     }
