@@ -57,13 +57,14 @@ public class TeamController extends BaseController {
         if (id == null) {
             return;
         }
-        Player p = (Player) HibernateUtil.retrievePlayerById(Integer.valueOf(id));
+        Team p = (Team) HibernateUtil.retrieveTeamById(Integer.valueOf(id));
         if (p == null) return;
-        buildSearchResultsTablePlayerDetail(p);
+        buildSearchResultsTableTeamDetail(p);
         view.buildLinkToSearch();
     }
 
-    private void buildSearchResultsTablePlayer(List<Player> bos) {
+    // This method needs some work.
+    private void buildSearchResultsTableTeam(List<Team> bos) {
         // need a row for the table headers
         String[][] table = new String[bos.size() + 1][10];
         table[0][0] = "Id";
