@@ -21,7 +21,9 @@ public abstract class BaseView {
         sb.append("<HTML>\r\n");
         sb.append("<HEAD><TITLE>");
         sb.append(title);
-        sb.append("</TITLE></HEAD>\r\n");
+        sb.append("</TITLE>");
+        sb.append("<style>table body{background-color: linen;} table {align:center;} td {text-align: center} image {align: center} form {align: center}</style>");
+        sb.append("</HEAD>\r\n");
         sb.append("<BODY>\r\n");
         sb.append("<h2>MLB - ");
         sb.append(title);
